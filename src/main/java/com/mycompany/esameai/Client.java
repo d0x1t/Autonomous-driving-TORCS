@@ -36,8 +36,8 @@ public class Client {
     private static volatile boolean running = true;
     private static BlockingQueue<String> packetQueue = new LinkedBlockingQueue<>();
     private static SocketHandler mySocket = new SocketHandler(host, port, verbose);
-    private static String outputCsvFile = "datasetTORCS.csv";
-    private static String normalizedFile = "output_normalized.csv";
+    private static String datasetFile = "datasetTORCS.csv";
+    private static String outputNormalizedFile = "output_normalized.csv";
     private static Scanner scanner = new Scanner(System.in);
     public static double[] minValues;
     public static double[] maxValues;
@@ -83,7 +83,7 @@ public class Client {
     }
 
     public static void guidaAutonoma() {
-        File fileOutput = new File(outputCsvFile);
+        File fileOutput = new File(datasetFile);
         int k = 5;
         // Costruisco il mio classificatore a partire dal nome del file dei prototipi
         
@@ -111,9 +111,9 @@ public class Client {
                 System.out.println("Sto terminando");
                 return;
             }
-        } else if (checkUltimaNormalizzazione(outputCsvFile, normalizedFile)) {
+        } else if (checkUltimaNormalizzazione(datasetFile, outputNormalizedFile)) {
             if(!fileNormalizedNotExist){
-                NormalizeCSV.normalizeFile(outputCsvFile, normalizedFile);
+                NormalizeCSV.normalizeFile(datasetFile, outputNormalizedFile);
             }else{
             System.out.println("È stata rilevata una versione del training set aggiornata. Vuoi aggiornare la normalizzazione? [y,n]");
             String response = "";
@@ -130,7 +130,7 @@ public class Client {
             } while (!response.equals("y") && !response.equals("n"));
 
             if (response.equals("y")) {
-                NormalizeCSV.normalizeFile(outputCsvFile, normalizedFile);
+                NormalizeCSV.normalizeFile(datasetFile, outputNormalizedFile);
                 System.out.println("Normalizzazione terminata");
             }
             }
@@ -138,8 +138,8 @@ public class Client {
         }
         scanner.close();
 
-        System.out.println("Sto esaminando il dataset " + normalizedFile + "...");
-        NearestNeighbor knn = new NearestNeighbor(normalizedFile);
+        System.out.println("Sto esaminando il dataset " + outputNormalizedFile + "...");
+        NearestNeighbor knn = new NearestNeighbor(outputNormalizedFile);
         NormalizeCSV.loadMinMaxValues();
         System.out.println("KNN Pronto");
 
@@ -232,12 +232,12 @@ public class Client {
     public static void guidaControllata() {
 
         String response = "";
-        File file = new File(outputCsvFile);
+        File file = new File(datasetFile);
         boolean fileExists = file.exists();
         if (fileExists) {
             // Chiede all'utente se vuole sovrascrivere il file esistente
             do {
-                System.out.println("Il file " + outputCsvFile + " esiste già. Vuoi sovrascriverlo? [y,n]");
+                System.out.println("Il file " + datasetFile + " esiste già. Vuoi sovrascriverlo? [y,n]");
                 response = scanner.nextLine().trim().toLowerCase();
                 if (response.isEmpty()) {
                     response = "y";
@@ -256,7 +256,7 @@ public class Client {
         }
         scanner.close();
         String inMsg;
-        try (BufferedWriter bfw = new BufferedWriter(new FileWriter(outputCsvFile, true))) {
+        try (BufferedWriter bfw = new BufferedWriter(new FileWriter(datasetFile, true))) {
             if (!fileExists) {
                 bfw.append("SensoreFrontale;DifferenzaSxDxSensor;DifferenzaSxMinDxMinSensor;PosizioneRispettoAlCentro;AngoloLongTang;Cls");
                 bfw.newLine();
@@ -423,7 +423,7 @@ public class Client {
 
         @Override
         public void run() {
-            try (BufferedWriter bfw = new BufferedWriter(new FileWriter(outputCsvFile, true))) {
+            try (BufferedWriter bfw = new BufferedWriter(new FileWriter(datasetFile, true))) {
                 while (running) {
                     String data = null;
                     try {

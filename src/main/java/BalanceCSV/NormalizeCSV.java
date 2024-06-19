@@ -7,6 +7,7 @@ package BalanceCSV;
 import com.mycompany.esameai.Client;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,6 +17,9 @@ import java.util.Locale;
 
 
 public class NormalizeCSV{
+    private static String datasetFile = "datasetTORCS.csv";
+    private static String outputNormalizedFile = "output_normalized.csv";
+
 private static String minMaxFile = "minMaxFile.csv";
 
     public static void normalizeFile(String fileInput, String fileOutput) {
@@ -77,14 +81,21 @@ private static String minMaxFile = "minMaxFile.csv";
             e.printStackTrace();
         }
          saveMinMaxValues(minValues, maxValues, minMaxFile);
-    /*    for(int i = 0; i< 5; i++){
-          
-           Client.minValues[i] = minValues[i];
-           Client.maxValues[i] = maxValues[i];
-        }*/
     }
     
  public static void loadMinMaxValues() {
+     // Controlla se il file minMaxFile esiste
+        if (!new File(minMaxFile).exists()) {
+            // Controlla se il file datasetTORCS.csv esiste
+            if (new File(datasetFile).exists()) {
+                // Normalizza il file datasetTORCS.csv
+                normalizeFile(datasetFile, outputNormalizedFile);
+            } else {
+                // Stampa un messaggio di avviso
+                System.out.println("Prima di usare la guida autonoma devi creare il dataset con la guida controllata.");
+                return;  // Termina l'esecuzione se il dataset non esiste
+            }
+        }
         try (BufferedReader reader = new BufferedReader(new FileReader(minMaxFile))) {
             String line;
             List<Double> minValuesList = new ArrayList<>();
