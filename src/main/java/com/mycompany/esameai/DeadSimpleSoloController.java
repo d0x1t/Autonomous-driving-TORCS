@@ -1,8 +1,8 @@
 package com.mycompany.esameai;
 
 /**
- * Created by IntelliJ IDEA. User: Administrator Date: Mar 4, 2008 Time: 4:59:21
- * PM
+ * @author Gruppo13
+ * 
  * 
  */
 public class DeadSimpleSoloController extends Controller {
@@ -22,7 +22,7 @@ public class DeadSimpleSoloController extends Controller {
 		action.gear = 1;
 		return action;
 	}
-        	public Action control(SensorModel sensorModel, double[] actions_inviati,String tastoPremuto) {
+        public Action control(SensorModel sensorModel, double[] actions_inviati,String tastoPremuto) {
 		Action action = new Action();
 		if (sensorModel.getSpeed() < targetSpeed) {
 			action.accelerate = 1;

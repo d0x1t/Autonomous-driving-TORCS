@@ -1,8 +1,8 @@
 package com.mycompany.esameai;
 
 /**
- * Created by IntelliJ IDEA. User: Administrator Date: Mar 4, 2008 Time: 3:35:31
- * PM
+ * @author Gruppo13
+ * 
  */
 public class Action {
         

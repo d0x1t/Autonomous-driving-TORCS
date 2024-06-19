@@ -1,8 +1,8 @@
 package com.mycompany.esameai;
 
 /**
- * Created by IntelliJ IDEA. User: Administrator Date: Mar 4, 2008 Time:
- * 12:18:47 PM
+ * @author Gruppo13
+ * 
  */
 public interface SensorModel {
 

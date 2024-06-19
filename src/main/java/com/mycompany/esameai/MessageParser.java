@@ -58,11 +58,11 @@ public class MessageParser {
 				} else {
 					String token = rt.nextToken();
 					try {
-						readingValue = token;
+						readingValue = Double.valueOf(token);
 					} catch (Exception e) {
 						System.out.println("Error parsing value '" + token + "' for " + readingName + " using 0.0");
 						System.out.println("Message: " + message);
-						readingValue = 0.0;
+						readingValue =Double.valueOf(0.0);
 					}
 				}
 				table.put(readingName, readingValue);

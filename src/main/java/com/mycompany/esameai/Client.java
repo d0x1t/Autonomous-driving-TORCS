@@ -18,9 +18,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import BalanceCSV.*;
-
 /**
- * @author Daniele Loiacono
+ * @author Gruppo13
  *
  */
 public class Client {
@@ -38,10 +37,7 @@ public class Client {
     private static BlockingQueue<String> packetQueue = new LinkedBlockingQueue<>();
     private static SocketHandler mySocket = new SocketHandler(host, port, verbose);
     private static String outputCsvFile = "datasetTORCS.csv";
-
     private static String normalizedFile = "output_normalized.csv";
-    //private static String outputCsvFile = normalizedFile;
-    //private static String outputCSVFile = balancedFile;
     private static Scanner scanner = new Scanner(System.in);
     public static double[] minValues;
     public static double[] maxValues;

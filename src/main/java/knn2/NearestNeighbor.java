@@ -50,7 +50,6 @@ public class NearestNeighbor {
 
     // Conta le occorrenze di ciascuna classe tra i k vicini
     for (Sample neighbor : kNearestNeighbors) {
-        System.out.println("Classe scelta " + neighbor.cls);
         classCounts[neighbor.cls]++;
     }
 

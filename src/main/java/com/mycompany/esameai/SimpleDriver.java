@@ -1,3 +1,8 @@
+/**
+ * @author Gruppo13
+ *
+ */
+
 package com.mycompany.esameai;
 
 
@@ -119,7 +124,7 @@ public class SimpleDriver extends Controller {
 
         if (tastoPremuto == 0) {
             double differenzaAssolutaAngoli = Math.abs(sxSensor - dxSensor);
-            System.out.println("SONO NELLA W");
+            //System.out.println("SONO NELLA W");
             Action action = new Action();
             //mi faccio aiutare con la sterzata solo quando sono nella pista 
             if (sensors.getTrackPosition() > -1 && sensors.getTrackPosition() < 1) {
@@ -173,7 +178,7 @@ public class SimpleDriver extends Controller {
                 return action;
             }
 
-            System.out.println("SONO NELLA F");
+           // System.out.println("SONO NELLA F");
 
             action.accelerate = 0.0d;
 
@@ -184,7 +189,7 @@ public class SimpleDriver extends Controller {
             return action;
         }
         if (tastoPremuto == 2) {
-            System.out.println("SONO NELLA S");
+          //  System.out.println("SONO NELLA S");
             Action action = new Action();
             action.accelerate = 1.00d;
             action.brake = 0.0d;
@@ -194,7 +199,7 @@ public class SimpleDriver extends Controller {
         }
 
         if (tastoPremuto == 3) {
-            System.out.println("SONO NELLA D");
+          //  System.out.println("SONO NELLA D");
 
             Action action = new Action();
             //Premo D per la prima volta
@@ -257,7 +262,7 @@ public class SimpleDriver extends Controller {
 
         }
         if (tastoPremuto == 1) {
-            System.out.println("Sono nella A");
+           // System.out.println("Sono nella A");
             Action action = new Action();
             //Premo A per la prima volta
             if (actions_precedente[3] == 0) {
@@ -331,11 +336,7 @@ public class SimpleDriver extends Controller {
         float dxSensor = (float) sensors.getTrackEdgeSensors()[10];
         float minimoSxSensor = (float) sensors.getTrackEdgeSensors()[7];
         float minimoDxSensor = (float) sensors.getTrackEdgeSensors()[11];
-        /*System.out.println("Sensore frontale: " + sensorSensor);
-        System.out.println("Sensore sinistro: " + sxSensor);
-        System.out.println("Sensore destro: " + dxSensor);
-        System.out.println("Sensore sinistro minimo: " + minimoSxSensor);
-        System.out.println("Sensore destro minimo: " + minimoDxSensor);*/
+
         System.out.println("Velocita: " + sensors.getSpeed());
         System.out.println("Frontale: " + sensorSensor);
         System.out.println("Massimo Angolo: " + (sxSensor - dxSensor));
@@ -343,13 +344,9 @@ public class SimpleDriver extends Controller {
         System.out.println("Track Posizion: " + sensors.getTrackPosition());
         System.out.println("Angle to track: " + sensors.getAngleToTrackAxis());
         System.out.println("Speed laterale: " + sensors.getLateralSpeed());
-        System.out.println("Velocita ruota 0: " + sensors.getWheelSpinVelocity()[0]);
-        System.out.println("Velocita ruota 1: " + sensors.getWheelSpinVelocity()[1]);
-        System.out.println("Velocita ruota 2: " + sensors.getWheelSpinVelocity()[2]);
-        System.out.println("Velocita ruota 3: " + sensors.getWheelSpinVelocity()[3]);
         if (tastoPremuto == "W") {
             double differenzaAssolutaAngoli = Math.abs(sxSensor - dxSensor);
-            System.out.println("SONO NELLA W");
+          //  System.out.println("SONO NELLA W");
             Action action = new Action();
             //mi faccio aiutare con la sterzata solo quando sono nella pista 
             if (sensors.getTrackPosition() > -1 && sensors.getTrackPosition() < 1) {
@@ -403,7 +400,7 @@ public class SimpleDriver extends Controller {
                 return action;
             }
 
-            System.out.println("SONO NELLA F");
+           // System.out.println("SONO NELLA F");
 
             action.accelerate = 0.0d;
 
@@ -414,7 +411,7 @@ public class SimpleDriver extends Controller {
             return action;
         }
         if (tastoPremuto == "S") {
-            System.out.println("SONO NELLA S");
+          //  System.out.println("SONO NELLA S");
             Action action = new Action();
             action.accelerate = 1.00d;
             action.brake = 0.0d;
@@ -424,7 +421,7 @@ public class SimpleDriver extends Controller {
         }
 
         if (tastoPremuto == "D") {
-            System.out.println("SONO NELLA D");
+          //  System.out.println("SONO NELLA D");
 
             Action action = new Action();
             //Premo D per la prima volta
@@ -487,7 +484,7 @@ public class SimpleDriver extends Controller {
 
         }
         if (tastoPremuto == "A") {
-            System.out.println("Sono nella A");
+          //  System.out.println("Sono nella A");
             Action action = new Action();
             //Premo A per la prima volta
             if (actions_precedente[3] == 0) {
