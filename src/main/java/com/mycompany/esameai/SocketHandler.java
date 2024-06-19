@@ -77,7 +77,6 @@ public class SocketHandler {
 			socket.setSoTimeout(0);
 			return received;
 		} catch (SocketException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

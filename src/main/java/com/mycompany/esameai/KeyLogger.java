@@ -1,12 +1,5 @@
 package com.mycompany.esameai;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jnativehook.GlobalScreen;
@@ -15,7 +8,6 @@ import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
 public class KeyLogger implements NativeKeyListener {
-    private static final String CSV_FILE_PATH = "keylog.csv";
     private String tastoPremuto = "";
 
     public void avviaCattura() {

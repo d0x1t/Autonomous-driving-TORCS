@@ -1,6 +1,5 @@
 package com.mycompany.esameai;
 
-import java.io.IOException;
 
 public abstract class Controller {
 

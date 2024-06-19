@@ -11,15 +11,13 @@ public class NearestNeighbor {
 
     private List<Sample> trainingData;
     private KDTree kdtree;
-    private int[] classCounts; // VERIFICA NEI COSTRUTTORI CHE QUESTO SIA CONFORME CON QUELLO CHE STAI IPOTIZZANDO!
-  
+
     
 
 
     public NearestNeighbor(String filename) {
         this.trainingData = new ArrayList<>();
         this.kdtree = null;
-        this.classCounts = new int[5]; // Assuming classes are labeled 0-9
         
         this.readPointsFromCSV(filename);
     }

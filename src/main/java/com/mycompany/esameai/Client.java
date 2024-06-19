@@ -4,7 +4,6 @@
 package com.mycompany.esameai;
 
 import knn2.*;
-import java.util.StringTokenizer;
 
 import com.mycompany.esameai.Controller.Stage;
 
@@ -31,8 +30,6 @@ public class Client {
     private static final String host = "localhost";
     private static final String clientId = "SCR";
     private static final boolean verbose = false;
-    private static final int maxEpisodes = 1;
-    private static final int maxSteps = 0;
     private static final Stage stage = Stage.UNKNOWN;
     private static final String trackName = "unknow";
 
@@ -90,7 +87,6 @@ public class Client {
     }
 
     public static void guidaAutonoma() {
-        File fileNormalized = new File(normalizedFile);
         File fileOutput = new File(outputCsvFile);
         int k = 5;
         // Costruisco il mio classificatore a partire dal nome del file dei prototipi

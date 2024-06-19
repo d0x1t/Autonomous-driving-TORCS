@@ -1,6 +1,5 @@
 package com.mycompany.esameai;
 
-import java.io.IOException;
 
 public class SimpleDriver extends Controller {
 
@@ -44,7 +43,6 @@ public class SimpleDriver extends Controller {
     final float clutchMaxModifier = (float) 1.3;
     final float clutchMaxTime = (float) 1.5;
 
-    private int stuck = 0;
 
     // current clutch
     private float clutch = 0;
