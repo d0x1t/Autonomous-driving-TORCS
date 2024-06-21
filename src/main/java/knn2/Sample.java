@@ -1,72 +1,49 @@
 package knn2;
 
-/**
- * Questa classe va cambiata sulla base del vostro vettore di feature. Per ora,
- * considero: un vettore di feature di 3 double (x,y,z) e una classe che è un
- * intero.
- */
 public class Sample {
-
-   
-    double sensoreFrontale;
-    double differenzaSxDxSensor;
-    double differenzaSxMinDxMinSensor;
-    double posizioneRispettoAlCentro;
-    double angoloLongTang;
+    double[] features;
     int cls;
 
-    public Sample(double sensoreFrontale, double differenzaSxDxSensor, double differenzaSxMinDxMinSensor, double posizioneRispettoAlCentro, double angoloLongTang, int cls) {
-        
-        
-        this.sensoreFrontale = sensoreFrontale;
-        this.differenzaSxDxSensor = differenzaSxDxSensor;
-        this.differenzaSxMinDxMinSensor = differenzaSxMinDxMinSensor;
-        this.posizioneRispettoAlCentro = posizioneRispettoAlCentro;
-        this.angoloLongTang = angoloLongTang;
-        
+    /*
+    Constructor to initialize the Sample with a given set of features and class label.
+    This is typically used when building the dataset.
+    */
+    public Sample(double[] features, int cls) {
+        this.features = features;
         this.cls = cls;
-
     }
-
-    public Sample(double sensoreFrontale, double sensoreSinistra, double sensoreDestra, double posizioneRispettoAlCentro, double angoloLongTang) {
-        
-        this.sensoreFrontale = sensoreFrontale;
-        this.differenzaSxDxSensor = sensoreSinistra;
-        this.differenzaSxMinDxMinSensor = sensoreDestra;
-        this.posizioneRispettoAlCentro = posizioneRispettoAlCentro;
-        this.angoloLongTang = angoloLongTang;
-        
-    }
-
 
     /*
-    Chiamo questo costruttore quando ho la classe di appartenenza e sto costruendo il dataset. 
-    In alternativa, quando voglio classificare un nuovo campione, uso l'altro costruttore.
-     */
- /*
-    Questo costruttore prende la stringa dal file csv e costruisce il Sample
-     */
-    public Sample(String line) {
-        String[] parts = line.split(";");
-        this.sensoreFrontale = Double.parseDouble(parts[0].trim());
-        this.differenzaSxDxSensor = Double.parseDouble(parts[1].trim());
-        this.differenzaSxMinDxMinSensor = Double.parseDouble(parts[2].trim());
-        this.posizioneRispettoAlCentro = Double.parseDouble(parts[3].trim());
-        this.angoloLongTang = Double.parseDouble(parts[4].trim());
-        this.cls = Integer.parseInt(parts[5].trim());
+    Constructor to initialize the Sample with a given set of features without a class label.
+    This is used when classifying a new sample.
+    */
+    public Sample(double[] features) {
+        this.features = features;
+        this.cls = -1; // Default class value
     }
 
- public double distance(Sample other) {
-    return Math.sqrt(
-           
-             Math.pow(this.sensoreFrontale - other.sensoreFrontale, 2)
-            + Math.pow(this.differenzaSxDxSensor - other.differenzaSxDxSensor, 2)
-            + Math.pow(this.differenzaSxMinDxMinSensor - other.differenzaSxMinDxMinSensor, 2)
-            + Math.pow(this.posizioneRispettoAlCentro - other.posizioneRispettoAlCentro, 2)
-            + Math.pow(this.angoloLongTang - other.angoloLongTang, 2)
-           
-    );
-}
+    /*
+    Constructor to initialize the Sample from a CSV line.
+    Assumes the last value in the CSV is the class label.
+    */
+    public Sample(String line) {
+        String[] parts = line.split(";");
+        int n = parts.length;
+        features = new double[n - 1];
+        for (int i = 0; i < n - 1; i++) {
+            features[i] = Double.parseDouble(parts[i].trim());
+        }
+        this.cls = Integer.parseInt(parts[n - 1].trim());
+    }
 
-
+    /*
+    Method to calculate the Euclidean distance between this sample and another sample.
+    */
+    public double distance(Sample other) {
+        double sum = 0;
+        for (int i = 0; i < this.features.length; i++) {
+            sum += Math.pow(this.features[i] - other.features[i], 2);
+        }
+        return Math.sqrt(sum);
+    }
 }

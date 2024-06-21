@@ -110,11 +110,7 @@ public class SimpleDriver extends Controller {
         float dxSensor = (float) sensors.getTrackEdgeSensors()[10];
         float minimoSxSensor = (float) sensors.getTrackEdgeSensors()[7];
         float minimoDxSensor = (float) sensors.getTrackEdgeSensors()[11];
-        /*System.out.println("Sensore frontale: " + sensorSensor);
-        System.out.println("Sensore sinistro: " + sxSensor);
-        System.out.println("Sensore destro: " + dxSensor);
-        System.out.println("Sensore sinistro minimo: " + minimoSxSensor);
-        System.out.println("Sensore destro minimo: " + minimoDxSensor);*/
+
         System.out.println("Velocita: " + sensors.getSpeed());
         System.out.println("Frontale: " + sensorSensor);
         System.out.println("Massimo Angolo: " + (sxSensor - dxSensor));

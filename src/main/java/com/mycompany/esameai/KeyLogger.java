@@ -35,25 +35,11 @@ public class KeyLogger implements NativeKeyListener {
     public synchronized void nativeKeyPressed(NativeKeyEvent e) {
         String tasto = NativeKeyEvent.getKeyText(e.getKeyCode());
         
-        //   try {
-          /*      FileWriter csvWriter = new FileWriter(CSV_FILE_PATH, true);
-                LocalDateTime now = LocalDateTime.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-                String formattedDateTime = now.format(formatter);
-                csvWriter.append(formattedDateTime + ";");
-                csvWriter.append(tasto + "\n");
-                csvWriter.flush();
-                csvWriter.close();
-            */    
-                // Imposta il tasto premuto
                 System.out.println(tasto);
                 tastoPremuto = tasto;
                 
                 // Notifica il thread principale in attesa
                 this.notify();
-           /* } catch (IOException ex) {
-                ex.printStackTrace();
-            }*/
         
     }
 
