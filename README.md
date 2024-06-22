@@ -39,10 +39,13 @@ Il programma richiede all'utente di inserire il numero corrispondente alla modal
 
 Per avviare l'applicazione dal file JAR:
 
-\`\`\`bash
-java -jar NOME_DEL_FILE_JAR.jar
-\`\`\`
+  ```bash
+   git clone https://github.com/tuo_username/gestore_spese.git
+   cd gestore_spese
+   ```
 
-## Esecuzione dell'Applicazione
-File Sorgenti: Evitare di spostare i file sorgenti Java dal repository per evitare incoerenze con i package.
-Struttura dei File CSV: Assicurarsi che output_normalized.csv e minMaxFile.csv siano posizionati correttamente come descritto sopra per il corretto funzionamento dell'applicazione.
+
+### Esecuzione dell'Applicazione
+
+- File Sorgenti: Evitare di spostare i file sorgenti Java dal repository per evitare incoerenze con i package.
+- Struttura dei File CSV: Assicurarsi che output_normalized.csv e minMaxFile.csv siano posizionati correttamente come descritto sopra per il corretto funzionamento dell'applicazione.
