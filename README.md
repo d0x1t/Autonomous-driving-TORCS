@@ -28,7 +28,7 @@ Il programma richiede all'utente di inserire il numero corrispondente alla modal
 ### Passaggi per l'Installazione
 
 1. **Scaricare il Repository**:
-   - Clona o scarica il repository dal seguente link: [Autonomus-Driving-TORCS]((https://github.com/d0x1t/Autonomous-driving-TORCS).
+   - Clona o scarica il repository dal seguente link: [Autonomus-Driving-TORCS](https://github.com/d0x1t/Autonomous-driving-TORCS).
 
 2. **Posizionare i File CSV**:
    - I file `output_normalized.csv` e `minMaxFile.csv` devono essere posizionati nella stessa directory del file JAR se si avvia l'applicazione da JAR. Se si esegue l'applicazione dai sorgenti, i file CSV devono essere nella sovradirectory delle cartelle `target` e `src`.
