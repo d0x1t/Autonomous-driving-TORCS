@@ -391,7 +391,7 @@ public class SimpleDriver extends Controller {
         }
         if (tastoPremuto == "F") {
             Action action = new Action();
-            if (sensors.getSpeed() <= 85) {
+             if (sensors.getSpeed() <= 85) {
                 action.gear = getGear(sensors);
                 return action;
             }
@@ -586,8 +586,9 @@ public class SimpleDriver extends Controller {
     }
 
     float getBrake(SensorModel sensors, double[] action_precedenti) {
-          
-       if (sensors.getSpeed() <= 120) {
+       
+       
+          if (sensors.getSpeed() <= 120) {
             if (action_precedenti[1] == 0.40f) {
                 return 0.10f;
             } else {

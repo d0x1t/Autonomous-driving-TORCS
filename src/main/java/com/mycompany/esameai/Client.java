@@ -42,6 +42,7 @@ public class Client {
     private static Scanner scanner = new Scanner(System.in);
     public static double[] minValues;
     public static double[] maxValues;
+    //Supponiamo esista.
     private static boolean fileNormalizedNotExist = false;
 
     /**
@@ -124,7 +125,7 @@ public class Client {
                 return;
             }
         } else if (checkUltimaNormalizzazione(datasetFile, outputNormalizedFile)) {
-            if (!fileNormalizedNotExist) {
+            if (fileNormalizedNotExist) {
                 NormalizeCSV.normalizeFile(datasetFile, outputNormalizedFile);
             } else {
                 System.out.println(
@@ -212,7 +213,7 @@ public class Client {
                 double minimoSxSensor = sensors.getTrackEdgeSensors()[7];
                 double minimoDxSensor = sensors.getTrackEdgeSensors()[11];
 
-                double[] inputVector = { /* velocita, */sensorSensor, sxSensor - dxSensor,
+                double[] inputVector = { /*sensors.getSpeed(),*/sensorSensor, sxSensor - dxSensor,
                         minimoSxSensor - minimoDxSensor, sensors.getTrackPosition(), sensors.getAngleToTrackAxis() };
                 double[] normalizedVector = normalizeInputVector(inputVector, minValues, maxValues);
                 Sample testPoint = new Sample(normalizedVector);
@@ -336,11 +337,11 @@ public class Client {
                 try {
                     tastoPremuto = keyLogger.getTastoPremuto();
                     action = driver.control(sensors, actions_inviati, tastoPremuto);
-                    if (currentTimeMillis - lastAppendTimeMillis >= 20 /*
-                                                                        * && ((tastoPremuto == "U") || (tastoPremuto ==
-                                                                        * "H") || tastoPremuto == "J" || tastoPremuto ==
-                                                                        * "K" || tastoPremuto == "L")
-                                                                        */) {
+                    if (currentTimeMillis - lastAppendTimeMillis >= 20 
+                                                                        /*&& ((tastoPremuto == "U") || (tastoPremuto ==
+                                                                        "H") || tastoPremuto == "J" || tastoPremuto ==
+                                                                        "K" || tastoPremuto == "L")*/
+                                                                        ) {
 
                         lastAppendTimeMillis = currentTimeMillis; // Aggiorna l'ultimo timestamp
                         appendToQueue(sensors, tastoPremuto, csvQueue);
@@ -392,29 +393,30 @@ public class Client {
                     cls = 0;
                     break;
             }
-            /*
-             * switch (tastoPremuto) {
-             * case "U":
-             * cls = 0;
-             * break;
-             * case "H":
-             * cls = 1;
-             * break;
-             * case "J":
-             * cls = 2;
-             * break;
-             * case "K":
-             * cls = 3;
-             * break;
-             * case "L":
-             * 
-             * cls = 4;
-             * break;
-             * default:
-             * cls = 0;
-             * break;
-             * }
-             */
+                    
+         /*   
+            switch (tastoPremuto) {
+            case "U":
+            cls = 0;
+            break;
+            case "H":
+            cls = 1;
+            break;
+            case "J":
+            cls = 2;
+            break;
+            case "K":
+            cls = 3;
+            break;
+            case "L":
+            
+            cls = 4;
+            break;
+            default:
+            cls = 0;
+            break;
+            }
+            */
             StringBuilder data = new StringBuilder();
             double sensorSensor = sensors.getTrackEdgeSensors()[9];
             double sxSensor = sensors.getTrackEdgeSensors()[8];
@@ -423,7 +425,7 @@ public class Client {
             double minimoDxSensor = sensors.getTrackEdgeSensors()[11];
             double differenzaSxDxSensor = sxSensor - dxSensor;
             double differenzaSxMinDxMinSensor = minimoSxSensor - minimoDxSensor;
-            //data.append(Double.toString(sensors.getSpeed())).append(";");
+            data.append(Double.toString(sensors.getSpeed())).append(";");
             data.append(Double.toString(sensorSensor)).append(";");
             data.append(Double.toString(differenzaSxDxSensor)).append(";");
             data.append(Double.toString(differenzaSxMinDxMinSensor)).append(";");
@@ -505,7 +507,7 @@ public class Client {
         }
 
         if (!output.exists()) {
-            fileNormalizedNotExist = false;
+            fileNormalizedNotExist = true;
             // Se il file di output non esiste, dobbiamo eseguire la normalizzazione
             return true;
         }
