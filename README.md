@@ -1,6 +1,6 @@
 # Autonomus Driving TORCS
 
-Autonomus Driving TORCS è un progetto che esplora la guida autonoma utilizzando il simulatore TORCS (The Open Racing Car Simulator). Il progetto include un client che si connette al server TORCS e offre due modalità di guida:
+Autonomus Driving TORCS è un progetto che esplora la guida autonoma utilizzando il simulatore TORCS (The Open Racing Car Simulator). Il progetto include un client che si connette al server TORCS e offre due modalità di guida
 
 ## Obiettivo del Progetto
 
