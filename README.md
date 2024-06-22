@@ -40,8 +40,7 @@ Il programma richiede all'utente di inserire il numero corrispondente alla modal
 Per avviare l'applicazione dal file JAR:
 
   ```bash
-   git clone https://github.com/tuo_username/gestore_spese.git
-   cd gestore_spese
+java -jar NOME_DEL_FILE_JAR.jar
    ```
 
 
