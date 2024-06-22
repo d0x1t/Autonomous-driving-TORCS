@@ -52,6 +52,7 @@ public class SimpleDriver extends Controller {
     // current clutch
     private float clutch = 0;
 
+    @Override
     public void reset() {
         System.out.println("Restarting the race!");
 
@@ -103,228 +104,15 @@ public class SimpleDriver extends Controller {
     }
     
 
-    public Action control(SensorModel sensors, double[] actions_precedente, int tastoPremuto) {
 
-        float sensorSensor = (float) sensors.getTrackEdgeSensors()[9];
-        float sxSensor = (float) sensors.getTrackEdgeSensors()[8];
-        float dxSensor = (float) sensors.getTrackEdgeSensors()[10];
-        float minimoSxSensor = (float) sensors.getTrackEdgeSensors()[7];
-        float minimoDxSensor = (float) sensors.getTrackEdgeSensors()[11];
-
-        System.out.println("Velocita: " + sensors.getSpeed());
-        System.out.println("Frontale: " + sensorSensor);
-        System.out.println("Massimo Angolo: " + (sxSensor - dxSensor));
-        System.out.println("Minimo Angolo: " + (minimoSxSensor - minimoDxSensor));
-        System.out.println("Track Posizion: " + sensors.getTrackPosition());
-        System.out.println("Angle to track: " + sensors.getAngleToTrackAxis());
-
-        if (tastoPremuto == 0) {
-            double differenzaAssolutaAngoli = Math.abs(sxSensor - dxSensor);
-            //System.out.println("SONO NELLA W");
-            Action action = new Action();
-            //mi faccio aiutare con la sterzata solo quando sono nella pista 
-            if (sensors.getTrackPosition() > -1 && sensors.getTrackPosition() < 1) {
-                action.steering = this.getSteer(sensors);
-                //Sto sterzando troppo perche l'auto non è in linea con la strada quindi la velocità
-                //deve essere ridotta.
-                if (Math.abs(action.steering) >= 0.70d) {
-                    action.accelerate = 0.40d;
-                }
-            }
-            action.clutch = this.clutching(sensors, clutch);
-            action.gear = this.getGear(sensors);
-            if (action.gear == 0) {
-                action.gear = 1;
-            }
-
-            // Se ho un muro a 20metri posso avere una velocita di al massimo 40km/h perche sono in una curva STRETTA
-            //Politica di base:  sono al centro della curva quindi al massimo posso andare a 40km/h
-            if ((sensorSensor <= maxSpeedDistInCurva) && (sensors.getSpeed() > maxSpeedInCurva) && ((differenzaAssolutaAngoli >= 0 && differenzaAssolutaAngoli <= 3))) {
-
-                action.accelerate = 0.0d;
-                action.brake = getBrake(sensors, actions_precedente);
-
-            } else {
-                action.accelerate = 1.00d;
-            }
-
-            //Fra pochi istanti l'auto dovrà affrontare una curva PERICOLOSA o a destra o a sinistra.
-            //Politica di base: ogni curva NON SEMPLICE la devo affrontare ad un massimo di 70km/h
-            if (sensorSensor <= maxSpeedDistPreCurva && (differenzaAssolutaAngoli >= 4 && differenzaAssolutaAngoli <= 15)) {
-                action.accelerate = 1.d;
-
-                //Se sono qui allora sono in una curva larga che posso affrontare aumentando la velocita.
-                if (Math.abs(minimoSxSensor - minimoDxSensor) > 18) {
-                    return action;
-                }
-
-                if (sensors.getSpeed() > maxSpeedPreCurva) {
-                    action.accelerate = 0.0d;
-                    action.brake = getBrake(sensors, actions_precedente);
-
-                }
-            }
-
-            return action;
-        }
-        if (tastoPremuto == 4) {
-            Action action = new Action();
-            if (sensors.getSpeed() <= 85) {
-                action.gear = getGear(sensors);
-                return action;
-            }
-
-           // System.out.println("SONO NELLA F");
-
-            action.accelerate = 0.0d;
-
-            action.brake = getBrake(sensors, actions_precedente);
-
-            action.gear = this.getGear(sensors);
-
-            return action;
-        }
-        if (tastoPremuto == 2) {
-          //  System.out.println("SONO NELLA S");
-            Action action = new Action();
-            action.accelerate = 1.00d;
-            action.brake = 0.0d;
-            action.gear = -1;
-
-            return action;
-        }
-
-        if (tastoPremuto == 3) {
-          //  System.out.println("SONO NELLA D");
-
-            Action action = new Action();
-            //Premo D per la prima volta
-            if (actions_precedente[4] == 0) {
-                action.tastoD = 1;
-                //Sono al centro della curva. Sono sicuro che ho una velocita bassa grazie alla logica di W. 
-                if (sensorSensor <= 25 && (Math.abs(sxSensor - dxSensor) >= 0 && Math.abs(sxSensor - dxSensor) <= 6) && sensors.getSpeed() > 15) {
-                    action.accelerate = 0.0d;
-                } else //Logica di base. Non sono al centro della curva oppure sono in presenza di curve larghe quindi posso
-                //fare una sterzata piu ampia. 
-                {
-                    if (sensors.getSpeed() >= maxSpeedPreCurva) {
-                        action.accelerate = 0.0d;
-                    } else {
-                        action.accelerate = 1.00d;
-                    }
-                }
-                action.gear = this.getGear(sensors);
-                action.steering = -0.05d;
-                //Sto sterzando troppo rispetto alla curva. Sono pronto 
-                //per uscire dalla curva.
-                double angoloTangLong = sensors.getAngleToTrackAxis();
-                if (angoloTangLong > +0.25f && angoloTangLong < +1) {
-                    action.steering = 0.0d;
-                    action.accelerate = 0.60d;
-                }
-                return action;
-            } //Sto continuando a premere la D
-            else {
-                action.tastoD = 1;
-                if (actions_precedente[0] <= 0.40d) {
-
-                    action.accelerate = 0.40d;
-                    //Sono al centro della curva. Pero nel caso di curve larghe non entro nell'if 
-                    //anche perche posso fare di conseguenza la curva pià larga. 
-                    if (sensorSensor <= 25 && (Math.abs(sxSensor - dxSensor) >= 0 && Math.abs(sxSensor - dxSensor) <= 6) && sensors.getSpeed() > 15) {
-                        action.accelerate = 0.0d;
-                    }
-
-                } else //Logica di base. Se continuo a premere D diminuisco man mano la velocità fino ad arrivare a 0,40.
-                {
-                    action.accelerate = actions_precedente[0] - 0.03d;
-                }
-                //Logica di base. Se continuo a premere D aumento man mano la sterzata fino ad arrivare a 1.
-                action.steering = actions_precedente[2] - 0.05d;
-                //Sto quasi uscendo dalla curva iniziamo ad accellerare piano piano.
-                if (action.steering <= -0.75d) {
-                    action.accelerate = 0.40d;
-                }
-                action.gear = this.getGear(sensors);
-                //Sto sterzando troppo rispetto alla curva. Sono pronto 
-                //per uscire dalla curva.
-                double angoloTangLong = sensors.getAngleToTrackAxis();
-                if (angoloTangLong > +0.25f && angoloTangLong < +1) {
-                    action.steering = 0.0d;
-                    action.accelerate = 0.60d;
-                }
-                return action;
-            }
-
-        }
-        if (tastoPremuto == 1) {
-           // System.out.println("Sono nella A");
-            Action action = new Action();
-            //Premo A per la prima volta
-            if (actions_precedente[3] == 0) {
-                action.tastoA = 1;
-                //Sono al centro della curva. Sono sicuro che ho una velocita bassa grazie alla logica di W. 
-                if (sensorSensor <= 25 && (Math.abs(sxSensor - dxSensor) >= 0 && Math.abs(sxSensor - dxSensor) <= 6) && sensors.getSpeed() > 15) {
-                    action.accelerate = 0.0d;
-                } else //Logica di base. Non sono al centro della curva oppure sono in presenza di curve larghe quindi posso
-                //fare una sterzata piu ampia.
-                {
-                    if (sensors.getSpeed() >= maxSpeedPreCurva) {
-                        action.accelerate = 0.0d;
-                    } else {
-                        action.accelerate = 1.00d;
-                    }
-                }
-                action.gear = this.getGear(sensors);
-                action.steering = +0.05d;
-                //Sto sterzando troppo rispetto alla curva. Sono pronto 
-                //per uscire dalla curva.
-                double angoloTangLong = sensors.getAngleToTrackAxis();
-                if (angoloTangLong < -0.25f && angoloTangLong > -1) {
-                    action.steering = 0.0d;
-                    action.accelerate = 0.60d;
-                }
-                return action;
-            } //Sto continuando a premere la A
-            else {
-                action.tastoA = 1;
-                if (actions_precedente[0] <= 0.40d) {
-
-                    action.accelerate = 0.40d;
-                    //Sono al centro della curva. Pero nel caso di curve larghe non entro nell'if 
-                    //anche perche posso fare di conseguenza la curva pià larga. 
-                    if (sensorSensor <= 25 && (Math.abs(sxSensor - dxSensor) >= 0 && Math.abs(sxSensor - dxSensor) <= 6) && sensors.getSpeed() > 15) {
-                        action.accelerate = 0.0d;
-                    }
-
-                } else //Logica di base. Se continuo a premere A diminuisco man mano la velocità fino ad arrivare a 0,40.
-                {
-                    action.accelerate = actions_precedente[0] - 0.03d;
-                }
-                //Logica di base. Se continuo a premere D aumento man mano la sterzata fino ad arrivare a 1.
-                action.steering = actions_precedente[2] + 0.05d;
-                //Sto quasi uscendo dalla curva iniziamo ad accellerare piano piano.
-                if (action.steering >= +0.75d) {
-                    action.accelerate = 0.40d;
-                }
-                //Sto sterzando troppo rispetto alla curva. Sono pronto 
-                //per uscire dalla curva.
-                double angoloTangLong = sensors.getAngleToTrackAxis();
-                if (angoloTangLong < -0.25f && angoloTangLong > -1) {
-                    action.steering = 0.0d;
-                    action.accelerate = 0.60d;
-                }
-                action.gear = this.getGear(sensors);
-                return action;
-            }
-        }
-
-        Action action = new Action();
-        action.gear = getGear(sensors);
-
-        return action;
-    }
-
+    /**
+     * 
+     * @param sensors I dati dei sensori
+     * @param actions_precedente l'array delle precedenti azioni eseguite dal veicolo
+     * @param tastoPremuto carattere fornito in input dall'utente che indica quale azione eseguire 
+     * @return un oggetto Action contenente le azioni da eseguire: accelerazione, frenata, sterzata, cambio di marcia
+     */
+    @Override
     public Action control(SensorModel sensors, double[] actions_precedente, String tastoPremuto) {
 
         float sensorSensor = (float) sensors.getTrackEdgeSensors()[9];
@@ -337,10 +125,11 @@ public class SimpleDriver extends Controller {
         System.out.println("Frontale: " + sensorSensor);
         System.out.println("Massimo Angolo: " + (sxSensor - dxSensor));
         System.out.println("Minimo Angolo: " + (minimoSxSensor - minimoDxSensor));
-        System.out.println("Track Posizion: " + sensors.getTrackPosition());
+        System.out.println("Track Position: " + sensors.getTrackPosition());
         System.out.println("Angle to track: " + sensors.getAngleToTrackAxis());
         System.out.println("Speed laterale: " + sensors.getLateralSpeed());
-        if (tastoPremuto == "W") {
+        
+        if (tastoPremuto.equals("W")) {
             double differenzaAssolutaAngoli = Math.abs(sxSensor - dxSensor);
           //  System.out.println("SONO NELLA W");
             Action action = new Action();
@@ -389,9 +178,9 @@ public class SimpleDriver extends Controller {
 
             return action;
         }
-        if (tastoPremuto == "F") {
+        if (tastoPremuto.equals("F")) {
             Action action = new Action();
-             if (sensors.getSpeed() <= 85) {
+            if (sensors.getSpeed() <= 85) {
                 action.gear = getGear(sensors);
                 return action;
             }
@@ -406,7 +195,7 @@ public class SimpleDriver extends Controller {
 
             return action;
         }
-        if (tastoPremuto == "S") {
+        if (tastoPremuto.equals("S")) {
           //  System.out.println("SONO NELLA S");
             Action action = new Action();
             action.accelerate = 1.00d;
@@ -416,7 +205,7 @@ public class SimpleDriver extends Controller {
             return action;
         }
 
-        if (tastoPremuto == "D") {
+        if (tastoPremuto.equals("D")) {
           //  System.out.println("SONO NELLA D");
 
             Action action = new Action();
@@ -479,7 +268,7 @@ public class SimpleDriver extends Controller {
             }
 
         }
-        if (tastoPremuto == "A") {
+        if (tastoPremuto.equals("A")) {
           //  System.out.println("Sono nella A");
             Action action = new Action();
             //Premo A per la prima volta
@@ -586,9 +375,8 @@ public class SimpleDriver extends Controller {
     }
 
     float getBrake(SensorModel sensors, double[] action_precedenti) {
-       
-       
-          if (sensors.getSpeed() <= 120) {
+          
+       if (sensors.getSpeed() <= 120) {
             if (action_precedenti[1] == 0.40f) {
                 return 0.10f;
             } else {
@@ -602,6 +390,7 @@ public class SimpleDriver extends Controller {
 
     }
 
+    @Override
     public float[] initAngles() {
 
         float[] angles = new float[19];

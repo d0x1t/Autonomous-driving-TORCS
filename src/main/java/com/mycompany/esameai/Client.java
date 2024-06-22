@@ -18,7 +18,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import BalanceCSV.*;
-
 /**
  * @author Gruppo13
  *
@@ -47,31 +46,20 @@ public class Client {
 
     /**
      * @param args viene utilizzato per definire tutte le opzioni del client. -
-     *             port:N viene utilizzato per specificare la porta per la
-     *             connessione (il
-     *             valore predefinito è 3001). - host:INDIRIZZO viene utilizzato per
-     *             specificare l'indirizzo dell'host dove il server è in esecuzione
-     *             (il
-     *             valore predefinito è localhost). - id:ClientID viene utilizzato
-     *             per
-     *             specificare l'ID del client inviato al server (il valore
-     *             predefinito è
-     *             championship2009). - verbose:on viene utilizzato per attivare la
-     *             modalità
-     *             verbose (il valore predefinito è spento). - maxEpisodes:N viene
-     *             utilizzato per impostare il numero di episodi (il valore
-     *             predefinito è
-     *             1). - maxSteps:N viene utilizzato per impostare il numero massimo
-     *             di
-     *             passaggi per ogni episodio (il valore predefinito è 0, che
-     *             significa
-     *             numero illimitato di passaggi). - stage:N viene utilizzato per
-     *             impostare
-     *             lo stadio corrente: 0 è WARMUP, 1 è QUALIFYING, 2 è RACE, altri
-     *             valori
-     *             significano UNKNOWN (il valore predefinito è UNKNOWN). -
-     *             trackName:nome
-     *             viene utilizzato per impostare il nome della pista attuale.
+     * port:N viene utilizzato per specificare la porta per la connessione (il
+     * valore predefinito è 3001). - host:INDIRIZZO viene utilizzato per
+     * specificare l'indirizzo dell'host dove il server è in esecuzione (il
+     * valore predefinito è localhost). - id:ClientID viene utilizzato per
+     * specificare l'ID del client inviato al server (il valore predefinito è
+     * championship2009). - verbose:on viene utilizzato per attivare la modalità
+     * verbose (il valore predefinito è spento). - maxEpisodes:N viene
+     * utilizzato per impostare il numero di episodi (il valore predefinito è
+     * 1). - maxSteps:N viene utilizzato per impostare il numero massimo di
+     * passaggi per ogni episodio (il valore predefinito è 0, che significa
+     * numero illimitato di passaggi). - stage:N viene utilizzato per impostare
+     * lo stadio corrente: 0 è WARMUP, 1 è QUALIFYING, 2 è RACE, altri valori
+     * significano UNKNOWN (il valore predefinito è UNKNOWN). - trackName:nome
+     * viene utilizzato per impostare il nome della pista attuale.
      */
     public static void main(String[] args) {
 
@@ -99,7 +87,7 @@ public class Client {
         File fileOutput = new File(datasetFile);
         int k = 5;
         // Costruisco il mio classificatore a partire dal nome del file dei prototipi
-
+        
         boolean fileOutputExists = fileOutput.exists();
         if (!fileOutputExists) {
             String response = "";
@@ -130,23 +118,23 @@ public class Client {
             } else {
                 System.out.println(
                         "È stata rilevata una versione del training set aggiornata. Vuoi aggiornare la normalizzazione? [y,n]");
-                String response = "";
-                do {
-                    response = scanner.nextLine().trim().toLowerCase();
+            String response = "";
+            do {
+                response = scanner.nextLine().trim().toLowerCase();
 
-                    if (response.isEmpty()) {
-                        response = "y";
-                    }
-                    if (!response.equals("y") && !response.equals("n")) {
-                        System.out.println("Input non valido. Per favore, inserisci 'y' o 'n'.");
-                    }
-
-                } while (!response.equals("y") && !response.equals("n"));
-
-                if (response.equals("y")) {
-                    NormalizeCSV.normalizeFile(datasetFile, outputNormalizedFile);
-                    System.out.println("Normalizzazione terminata");
+                if (response.isEmpty()) {
+                    response = "y";
                 }
+                if (!response.equals("y") && !response.equals("n")) {
+                    System.out.println("Input non valido. Per favore, inserisci 'y' o 'n'.");
+                }
+
+            } while (!response.equals("y") && !response.equals("n"));
+
+            if (response.equals("y")) {
+                NormalizeCSV.normalizeFile(datasetFile, outputNormalizedFile);
+                System.out.println("Normalizzazione terminata");
+            }
             }
 
         }
@@ -181,8 +169,9 @@ public class Client {
         PacketThread packetThread = new PacketThread();
         Thread thread = new Thread(packetThread);
         thread.start();
+        
 
-        double[] actions_inviati = { -3, -3, -3, -3, -3 };
+        double[] actions_inviati = {-3, -3, -3, -3, -3};
 
         while (true) {
             inMsg = packetQueue.poll();
@@ -206,22 +195,32 @@ public class Client {
 
                 SensorModel sensors = new MessageBasedSensorModel(inMsg);
                 Action action = new Action();
-                // double velocita = sensors.getSpeed();
+
                 double sensorSensor = sensors.getTrackEdgeSensors()[9];
                 double sxSensor = sensors.getTrackEdgeSensors()[8];
                 double dxSensor = sensors.getTrackEdgeSensors()[10];
                 double minimoSxSensor = sensors.getTrackEdgeSensors()[7];
                 double minimoDxSensor = sensors.getTrackEdgeSensors()[11];
 
-                double[] inputVector = { /*sensors.getSpeed(),*/sensorSensor, sxSensor - dxSensor,
-                        minimoSxSensor - minimoDxSensor, sensors.getTrackPosition(), sensors.getAngleToTrackAxis() };
+                double[] inputVector = {sensorSensor, sxSensor - dxSensor, minimoSxSensor - minimoDxSensor, sensors.getTrackPosition(), sensors.getAngleToTrackAxis()};
                 double[] normalizedVector = normalizeInputVector(inputVector, minValues, maxValues);
+                
+
                 Sample testPoint = new Sample(normalizedVector);
+                
                 int predictedClass = knn.classify(testPoint, k);
+                String predictedClasstoString = null;
+                switch(predictedClass) {
+                    case 0 -> predictedClasstoString = "W";
+                    case 1 -> predictedClasstoString = "A";
+                    case 2 -> predictedClasstoString = "S";
+                    case 3 -> predictedClasstoString = "D";
+                    case 4 -> predictedClasstoString = "F";
+                }
+                action = driver.control(sensors, actions_inviati, predictedClasstoString);
+             
 
-                action = driver.control(sensors, actions_inviati, predictedClass);
-
-                System.out.println("Classe predetta: " + predictedClass);
+                System.out.println("Classe predetta: " + predictedClass + " quindi la " + predictedClasstoString);
                 mySocket.send(action.toString());
 
                 actions_inviati[0] = action.accelerate;
@@ -234,7 +233,7 @@ public class Client {
         }
 
         /*
-         * Shutdown the controller
+		 * Shutdown the controller
          */
         driver.shutdown();
         mySocket.close();
@@ -271,8 +270,7 @@ public class Client {
         String inMsg;
         try (BufferedWriter bfw = new BufferedWriter(new FileWriter(datasetFile, true))) {
             if (!fileExists) {
-                bfw.append(
-                        "SensoreFrontale;DifferenzaSxDxSensor;DifferenzaSxMinDxMinSensor;PosizioneRispettoAlCentro;AngoloLongTang;Cls");
+                bfw.append("SensoreFrontale;DifferenzaSxDxSensor;DifferenzaSxMinDxMinSensor;PosizioneRispettoAlCentro;AngoloLongTang;Cls");
                 bfw.newLine();
 
             }
@@ -305,7 +303,7 @@ public class Client {
         Thread thread1 = new Thread(csvThread);
         thread1.start();
 
-        double[] actions_inviati = { -3, -3, -3, -3, -3 };
+        double[] actions_inviati = {-3, -3, -3, -3, -3};
 
         long lastAppendTimeMillis = 0;
 
@@ -337,11 +335,7 @@ public class Client {
                 try {
                     tastoPremuto = keyLogger.getTastoPremuto();
                     action = driver.control(sensors, actions_inviati, tastoPremuto);
-                    if (currentTimeMillis - lastAppendTimeMillis >= 20 
-                                                                        /*&& ((tastoPremuto == "U") || (tastoPremuto ==
-                                                                        "H") || tastoPremuto == "J" || tastoPremuto ==
-                                                                        "K" || tastoPremuto == "L")*/
-                                                                        ) {
+                    if (currentTimeMillis - lastAppendTimeMillis >= 20 /*&& ((tastoPremuto == "U") || (tastoPremuto == "H") || tastoPremuto == "J" || tastoPremuto == "K" || tastoPremuto == "L")*/) {
 
                         lastAppendTimeMillis = currentTimeMillis; // Aggiorna l'ultimo timestamp
                         appendToQueue(sensors, tastoPremuto, csvQueue);
@@ -372,51 +366,18 @@ public class Client {
         System.out.println("Stai registrando!");
 
         int cls = -1;
-        try {
-            switch (tastoPremuto) {
-                case "W":
-                    cls = 0;
-                    break;
-                case "A":
-                    cls = 1;
-                    break;
-                case "S":
-                    cls = 2;
-                    break;
-                case "D":
-                    cls = 3;
-                    break;
-                case "F":
-                    cls = 4;
-                    break;
-                default:
-                    cls = 0;
-                    break;
-            }
-                    
-         /*   
-            switch (tastoPremuto) {
-            case "U":
-            cls = 0;
-            break;
-            case "H":
-            cls = 1;
-            break;
-            case "J":
-            cls = 2;
-            break;
-            case "K":
-            cls = 3;
-            break;
-            case "L":
-            
-            cls = 4;
-            break;
-            default:
-            cls = 0;
-            break;
-            }
-            */
+      try {
+              
+                cls = switch(tastoPremuto) {
+                    case "W" -> 0;
+                    case "A" -> 1;
+                    case "S" -> 2;
+                    case "D" -> 3;
+                    case "F" -> 4;
+                    default -> 0;
+                };
+
+       
             StringBuilder data = new StringBuilder();
             double sensorSensor = sensors.getTrackEdgeSensors()[9];
             double sxSensor = sensors.getTrackEdgeSensors()[8];
@@ -425,7 +386,7 @@ public class Client {
             double minimoDxSensor = sensors.getTrackEdgeSensors()[11];
             double differenzaSxDxSensor = sxSensor - dxSensor;
             double differenzaSxMinDxMinSensor = minimoSxSensor - minimoDxSensor;
-            data.append(Double.toString(sensors.getSpeed())).append(";");
+        
             data.append(Double.toString(sensorSensor)).append(";");
             data.append(Double.toString(differenzaSxDxSensor)).append(";");
             data.append(Double.toString(differenzaSxMinDxMinSensor)).append(";");
@@ -485,8 +446,7 @@ public class Client {
 
     public static double[] normalizeInputVector(double[] inputVector, double[] minValues, double[] maxValues) {
         if (inputVector.length != minValues.length) {
-            throw new IllegalArgumentException(
-                    "La lunghezza del vettore di input deve corrispondere ai valori minimi e massimi.");
+            throw new IllegalArgumentException("La lunghezza del vettore di input deve corrispondere ai valori minimi e massimi.");
         }
 
         double[] normalizedVector = new double[inputVector.length];

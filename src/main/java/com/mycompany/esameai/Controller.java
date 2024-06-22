@@ -47,7 +47,7 @@ public abstract class Controller {
 		this.trackName = trackName;
 	}
 
-	public abstract Action control(SensorModel sensors,double[] actions_inviati,int tastoPremuto);
+
         
         public abstract Action control(SensorModel sensors,double[] actions_inviati,String tastoPremuto);
 
